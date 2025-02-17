@@ -13,6 +13,9 @@
     "accessor.color.MixinShulkerBoxBlock",
     "accessor.color.MixinStainedGlassBlock",
     "accessor.color.MixinStainedGlassPaneBlock",
-    "accessor.color.MixinWoolCarpetBlock"
-  ]
+    "accessor.color.MixinWoolCarpetBlock",
+
+    "features.betterFakeSneaking.MixinPlayer"
+  ],
+  "plugin": "dev.fulcrum.dma.compat.MixinPlugin"
 }

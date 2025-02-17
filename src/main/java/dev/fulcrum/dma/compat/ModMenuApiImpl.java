@@ -1,4 +1,4 @@
-package dev.fulcrum.dma.impl.compat;
+package dev.fulcrum.dma.compat;
 
 import top.hendrixshen.magiclib.api.compat.modmenu.ModMenuApiCompat;
 import top.hendrixshen.magiclib.impl.malilib.config.gui.MagicConfigGui;

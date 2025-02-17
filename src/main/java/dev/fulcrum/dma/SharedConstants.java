@@ -14,4 +14,5 @@ public interface SharedConstants {
 
     // compat
     boolean HAS_GCA = FabricLoader.getInstance().isModLoaded("gca");
+    boolean HAS_TWEAKEROO = FabricLoader.getInstance().isModLoaded("tweakeroo");
 }

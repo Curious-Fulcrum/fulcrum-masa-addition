@@ -14,7 +14,7 @@
       "dev.fulcrum.dma.FulcrumMasaAddition"
     ],
     "modmenu": [
-      "dev.fulcrum.dma.impl.compat.ModMenuApiImpl"
+      "dev.fulcrum.dma.compat.ModMenuApiImpl"
     ]
   },
   "mixins": [

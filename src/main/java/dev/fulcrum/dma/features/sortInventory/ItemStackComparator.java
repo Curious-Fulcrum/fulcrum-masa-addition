@@ -1,4 +1,4 @@
-package dev.fulcrum.dma.impl.feature.sortInventory;
+package dev.fulcrum.dma.features.sortInventory;
 
 import com.google.common.collect.Maps;
 import dev.fulcrum.dma.Configs;

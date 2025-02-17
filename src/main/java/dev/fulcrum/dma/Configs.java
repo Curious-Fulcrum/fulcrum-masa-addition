@@ -1,6 +1,6 @@
 package dev.fulcrum.dma;
 
-import dev.fulcrum.dma.impl.feature.sortInventory.SortInventoryHelper;
+import dev.fulcrum.dma.features.sortInventory.SortInventoryHelper;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import top.hendrixshen.magiclib.api.dependency.annotation.Dependencies;
 import top.hendrixshen.magiclib.api.dependency.annotation.Dependency;
@@ -24,6 +24,10 @@ public class Configs {
     @Dependencies(require = @Dependency("tweakeroo"))
     @Config(category = ConfigCategory.FEATURE)
     public static MagicConfigBoolean sortInventorySupportEmptyShulkerBoxStack = cf.newConfigBoolean("sortInventorySupportEmptyShulkerBoxStack", false);
+
+    @Dependencies(require = @Dependency("tweakeroo"))
+    @Config(category = ConfigCategory.FEATURE)
+    public static MagicConfigBoolean betterFakeSneaking = cf.newConfigBoolean("betterFakeSneaking", true);
 
     public static void init() {
         cm.parseConfigClass(Configs.class);

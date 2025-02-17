@@ -1,4 +1,4 @@
-package dev.fulcrum.dma.impl.feature.sortInventory;
+package dev.fulcrum.dma.features.sortInventory;
 
 import dev.fulcrum.dma.SharedConstants;
 import dev.fulcrum.dma.mixin.accessor.AbstractContainerScreenAccessor;
