@@ -1,12 +1,15 @@
 package dev.fulcrum.dma.impl.feature.sortInventory;
 
+import dev.fulcrum.dma.SharedConstants;
 import dev.fulcrum.dma.mixin.accessor.AbstractContainerScreenAccessor;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -34,14 +37,29 @@ public class SortInventoryHelper {
         if (hoveredSlot == null || client.gameMode == null || player == null) return;
 
         var container = player.containerMenu;
-        var sortRange = getSortRange(container, hoveredSlot);
-        if (sortRange == null) return;
+        var sortRangeAndIgnoreList = getSortRangeAndIgnoreList(container, hoveredSlot);
+        if (sortRangeAndIgnoreList == null) return;
+        var sortRange = sortRangeAndIgnoreList.left();
+        var ignoreList = sortRangeAndIgnoreList.right();
 
         var cursorStack = container.getCarried().copy();
-        var itemStacks = container.slots.stream().map(slot -> slot.getItem().copy()).collect(Collectors.toList());
+        var stacks = container.slots.stream().map(slot -> slot.getItem().copy()).collect(Collectors.toList());
+        IntList mergeQueue, sortQueue;
+        int begin = sortRange.leftInt(), end = sortRange.rightInt();
 
-        var mergeQueue = mergeItems(itemStacks, cursorStack, sortRange);
-        var sortQueue = quickSort(Collections.unmodifiableList(itemStacks), sortRange);
+        if (ignoreList.isEmpty()) {
+            mergeQueue = mergeItems(stacks, cursorStack, begin, end);
+            sortQueue = quickSort(stacks, begin, end);
+        } else {
+            mergeQueue = new IntArrayList(mergeItems(stacks, cursorStack, begin, ignoreList.getFirst()));
+            sortQueue = new IntArrayList(quickSort(stacks, begin, ignoreList.getFirst()));
+            for (int i = 1, limit = ignoreList.size(); i < limit; i++) {
+                mergeQueue.addAll(mergeItems(stacks, cursorStack, ignoreList.get(i - 1) + 1, ignoreList.get(i)));
+                sortQueue.addAll(quickSort(stacks, ignoreList.get(i - 1) + 1, ignoreList.get(i)));
+            }
+            mergeQueue.addAll(mergeItems(stacks, cursorStack, ignoreList.getLast() + 1, end));
+            sortQueue.addAll(quickSort(stacks, ignoreList.getLast() + 1, end));
+        }
 
         // do click
         for (int slotId : mergeQueue)
@@ -60,50 +78,63 @@ public class SortInventoryHelper {
     }
 
     @Nullable
-    private static IntIntPair getSortRange(AbstractContainerMenu container, @NotNull Slot hoveredSlot) {
+    private static Pair<IntIntPair, List<Integer>> getSortRangeAndIgnoreList(AbstractContainerMenu container, @NotNull Slot hoveredSlot) {
         int mouseIdx = hoveredSlot.index;
-
         if (mouseIdx == 0 && hoveredSlot.getContainerSlot() != 0) mouseIdx = hoveredSlot.getContainerSlot();
 
-        int left = mouseIdx;
-        int right = mouseIdx + 1;
+        int left = mouseIdx, right = mouseIdx + 1;
 
         Class<?> clazz = container.slots.get(mouseIdx).container.getClass();
+        IntList ignoreList1 = new IntArrayList(), ignoreList2 = new IntArrayList();
+        if (SharedConstants.HAS_GCA && shouldIgnore(hoveredSlot.getItem())) ignoreList2.add(mouseIdx);
 
         for (int i = mouseIdx - 1; i >= 0; i--) {
-            if (clazz != container.slots.get(i).container.getClass()) {
+            var slot = container.slots.get(i);
+            if (clazz != slot.container.getClass()) {
                 left = i + 1;
                 break;
             } else if (i == 0) left = 0;
+            else if (SharedConstants.HAS_GCA && shouldIgnore(slot.getItem())) ignoreList1.add(i);
         }
 
         var limit = container.slots.size();
         for (int i = right; i < limit; i++) {
-            if (clazz != container.slots.get(i).container.getClass()) {
+            var slot = container.slots.get(i);
+            if (clazz != slot.container.getClass()) {
                 right = i;
                 break;
-            } else if (i == limit - 1) {
-                right = limit;
-            }
+            } else if (i == limit - 1) right = limit;
+            else if (SharedConstants.HAS_GCA && shouldIgnore(slot.getItem())) ignoreList2.add(i);
         }
 
         if (hoveredSlot.container instanceof Inventory) {
             if (left == 5 && right == 46) {
-                if (mouseIdx >= 9 && mouseIdx < 36) return new IntIntImmutablePair(9, 36);
-                else if (mouseIdx >= 36 && mouseIdx < 45) return new IntIntImmutablePair(36, 45);
-                return null;
+                if (mouseIdx >= 9 && mouseIdx < 36) {
+                    left = 9;
+                    right = 36;
+                } else if (mouseIdx >= 36 && mouseIdx < 45) {
+                    left = 36;
+                    right = 45;
+                } else return null;
             } else if (right - left == 36) {
-                if (mouseIdx >= left && mouseIdx < left + 27) return new IntIntImmutablePair(left, left + 27);
-                else return new IntIntImmutablePair(left + 27, right);
+                if (mouseIdx >= left && mouseIdx < left + 27)
+                    right = left + 27;
+                else left += 27;
             }
         }
-
-        return left + 1 == right ? null : new IntIntImmutablePair(left, right);
+        var result = ignoreList1.reversed();
+        result.addAll(ignoreList2);
+        return left + 1 == right ? null : Pair.of(IntIntPair.of(left, right), result);
     }
 
-    private static @NotNull IntList mergeItems(List<ItemStack> targetStacks, @NotNull ItemStack cursorStack, IntIntPair range) {
-        int begin = range.leftInt(), end = range.rightInt();
+    private static boolean shouldIgnore(ItemStack itemStack) {
+        var itemTag = itemStack.get(DataComponents.CUSTOM_DATA);
+        return itemTag != null && !itemTag.isEmpty() && itemTag.contains("GcaClear");
+    }
+
+    private static @NotNull IntList mergeItems(List<ItemStack> targetStacks, @NotNull ItemStack cursorStack, int begin, int end) {
         var mergeQueue = new IntArrayList();
+        if (end - begin <= 0) return mergeQueue;
         // 先把手中的物品尽量地放入背包或容器中，从而保证后续的整理不会被手中物品合并而影响
         if (!cursorStack.isEmpty()) mergeQueue.addAll(tryMergeItem(targetStacks, cursorStack, begin, end));
 
@@ -133,9 +164,7 @@ public class SortInventoryHelper {
         return mergeQueue;
     }
 
-    /**
-     * @return 物品合并记录
-     */
+    /// @return 物品合并记录
     private static @NotNull IntList tryMergeItem(List<ItemStack> stacks, ItemStack stackToAdd, int begin, int end) {
         // merge in [begin, end)
         var mergeRecord = new IntArrayList();
@@ -158,14 +187,17 @@ public class SortInventoryHelper {
         return mergeRecord;
     }
 
-    private static @NotNull IntList quickSort(List<ItemStack> stacks, IntIntPair range) {
-        // sort [start, end)
-        int start = range.leftInt(), end = range.rightInt(), size = end - start;
+    /// sort [start, end)
+    private static @NotNull IntList quickSort(List<ItemStack> stacks, int begin, int end) {
+        // uncomment the following line to help check if the `stacks` is illegally modified
+        // stacks = Collections.unmodifiableList(stacks);
+        int size = end - begin;
         IntList sortQueue = new IntArrayList();
+        if (size <= 0) return sortQueue;
         List<ObjectIntPair<ItemStack>> sorted = new ArrayList<>(size);
 
         boolean allShulkerBox = true;
-        for (int i = start; i < end; i++) {
+        for (int i = begin; i < end; i++) {
             var stack = stacks.get(i);
             sorted.add(ObjectIntPair.of(stack, i));
             if (allShulkerBox && !stack.isEmpty() && !ShulkerBoxItemHelper.isShulkerBoxBlockItem(stack))
@@ -178,7 +210,7 @@ public class SortInventoryHelper {
         for (int i = 0; i < size; i++) {
             var stackInfo = sorted.get(i);
             if (!stackInfo.left().isEmpty())
-                map.put(stackInfo.rightInt(), i + start);
+                map.put(stackInfo.rightInt(), i + begin);
         }
 
 

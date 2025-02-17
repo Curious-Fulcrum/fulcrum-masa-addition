@@ -47,6 +47,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modRuntimeOnly "maven.modrinth:carpet:${project.carpet_version}"
+    modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
     modApi(annotationProcessor("top.hendrixshen.magiclib:magiclib-all-${project.minecraft_version}-fabric:${project.magiclib_version}"))
     modApi "com.github.sakura-ryoko:tweakeroo:${project.tweakeroo_version}"
 }

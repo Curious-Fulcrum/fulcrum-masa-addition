@@ -12,21 +12,13 @@ import org.jetbrains.annotations.Nullable;
 public class ShulkerBoxItemHelper {
 
     public static boolean isEmptyShulkerBoxItem(ItemStack itemStack) {
-        if (!ShulkerBoxItemHelper.isShulkerBoxBlockItem(itemStack)) {
-            return false;
-        }
-
-
-        ItemContainerContents icc = itemStack.get(DataComponents.CONTAINER);
-        if (icc != null) {
-            icc.stream().allMatch(ItemStack::isEmpty);
-        }
-        return true;
+        if (!ShulkerBoxItemHelper.isShulkerBoxBlockItem(itemStack)) return false;
+        var contents = itemStack.get(DataComponents.CONTAINER);
+        return contents != null && contents.stream().allMatch(ItemStack::isEmpty);
     }
 
     public static boolean isShulkerBoxBlockItem(@NotNull ItemStack itemStack) {
-        return itemStack.getItem() instanceof BlockItem &&
-                ((BlockItem) itemStack.getItem()).getBlock() instanceof ShulkerBoxBlock;
+        return itemStack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof ShulkerBoxBlock;
     }
 
     public static int compareShulkerBox(@Nullable ItemContainerContents a, @Nullable ItemContainerContents b) {

@@ -100,8 +100,8 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
         if (a.getItem() instanceof BlockItem blockItemA && b.getItem() instanceof BlockItem blockItemB) {
             Block blockA = blockItemA.getBlock(), blockB = blockItemB.getBlock();
 
-            if (blockA instanceof ColorAccessor && blockB instanceof ColorAccessor)
-                return DYE_COLOR_MAPPING.get(((ColorAccessor) blockA).fma$getColor()) - DYE_COLOR_MAPPING.get(((ColorAccessor) blockB).fma$getColor());
+            if (blockA instanceof ColorAccessor accessorA && blockB instanceof ColorAccessor accessorB)
+                return DYE_COLOR_MAPPING.get(accessorA.fma$getColor()) - DYE_COLOR_MAPPING.get(accessorB.fma$getColor());
 
             String ida = BuiltInRegistries.BLOCK.getKey(blockA).getPath();
             String idb = BuiltInRegistries.BLOCK.getKey(blockB).getPath();
