@@ -1,0 +1,17 @@
+{
+  "fma.gui.title.configs": "Fulcrum Masa Addition - 设置 - 版本: %s",
+  "fma.config.category.all.name": "全部",
+  "fma.config.category.generic.name": "通用",
+  "fma.config.category.feature.name": "特性",
+
+  "fma.config.option.openConfigGui.name": "打开设置界面",
+  "fma.config.option.openConfigGui.comment": "打开设置界面的快捷键",
+  "fma.config.option.sortInventory.name": "整理仓库",
+  "fma.config.option.sortInventory.comment": "整理仓库的快捷键",
+  "fma.config.option.sortInventoryShulkerBoxLast.name": "整理仓库时潜影盒放在最后",
+  "fma.config.option.sortInventoryShulkerBoxLast.comment": "整理仓库时潜影盒放在最后",
+  "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.name": "整理仓库时支持空潜影盒堆叠",
+  "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.comment": "整理仓库时支持空潜影盒堆叠（请配合 PCA 使用）",
+  "fma.config.option.betterFakeSneaking.name": "更好的伪潜行",
+  "fma.config.option.betterFakeSneaking.comment": "在伪潜行时玩家可以向下移动 1 格高"
+}

@@ -1,6 +1,6 @@
-package dev.fulcrum.dma.features.sortInventory;
+package dev.fulcrum.fma.features.sortInventory;
 
-import dev.fulcrum.dma.Configs;
+import dev.fulcrum.fma.Configs;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;

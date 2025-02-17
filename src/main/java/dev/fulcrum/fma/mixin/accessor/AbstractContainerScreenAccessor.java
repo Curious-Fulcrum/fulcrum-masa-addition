@@ -1,4 +1,4 @@
-package dev.fulcrum.dma.mixin.accessor;
+package dev.fulcrum.fma.mixin.accessor;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;

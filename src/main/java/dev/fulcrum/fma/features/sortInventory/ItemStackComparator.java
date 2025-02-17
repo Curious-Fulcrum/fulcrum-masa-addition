@@ -1,7 +1,7 @@
-package dev.fulcrum.dma.features.sortInventory;
+package dev.fulcrum.fma.features.sortInventory;
 
 import com.google.common.collect.Maps;
-import dev.fulcrum.dma.Configs;
+import dev.fulcrum.fma.Configs;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;

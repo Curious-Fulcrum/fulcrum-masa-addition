@@ -1,16 +1,15 @@
-package dev.fulcrum.dma.compat;
+package dev.fulcrum.fma.compat;
 
+import dev.fulcrum.fma.SharedConstants;
 import top.hendrixshen.magiclib.api.compat.modmenu.ModMenuApiCompat;
-import top.hendrixshen.magiclib.impl.malilib.config.gui.MagicConfigGui;
 
-import static dev.fulcrum.dma.SharedConstants.CONFIG_MANAGER;
-import static dev.fulcrum.dma.SharedConstants.MOD_ID;
+import static dev.fulcrum.fma.SharedConstants.MOD_ID;
 
 public class ModMenuApiImpl implements ModMenuApiCompat {
     @Override
     public ConfigScreenFactoryCompat<?> getConfigScreenFactoryCompat() {
         return (screen) -> {
-            var configGui = new MagicConfigGui(MOD_ID, CONFIG_MANAGER, "test");
+            var configGui = SharedConstants.getConfigGui();
             configGui.setParent(screen);
             return configGui;
         };

@@ -1,4 +1,4 @@
-package dev.fulcrum.dma.features.sortInventory;
+package dev.fulcrum.fma.features.sortInventory;
 
 import net.minecraft.world.item.DyeColor;
 

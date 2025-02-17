@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "id": "dma",
+  "id": "fma",
   "version": "${version}",
   "name": "FulcrumMasaAddition",
   "description": "",
   "authors": [],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/dma/icon.png",
+  "icon": "assets/fma/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "dev.fulcrum.dma.FulcrumMasaAddition"
+      "dev.fulcrum.fma.FulcrumMasaAddition"
     ],
     "modmenu": [
-      "dev.fulcrum.dma.compat.ModMenuApiImpl"
+      "dev.fulcrum.fma.compat.ModMenuApiImpl"
     ]
   },
   "mixins": [
-    "dma.mixins.json"
+    "fma.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

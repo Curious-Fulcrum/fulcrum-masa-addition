@@ -1,6 +1,6 @@
-package dev.fulcrum.dma.mixin.accessor.color;
+package dev.fulcrum.fma.mixin.accessor.color;
 
-import dev.fulcrum.dma.features.sortInventory.ColorAccessor;import net.minecraft.world.item.DyeColor;
+import dev.fulcrum.fma.features.sortInventory.ColorAccessor;import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.BedBlock;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

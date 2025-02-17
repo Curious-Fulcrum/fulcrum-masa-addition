@@ -1,14 +1,14 @@
-package dev.fulcrum.dma.mixin.accessor.color;
+package dev.fulcrum.fma.mixin.accessor.color;
 
-import dev.fulcrum.dma.features.sortInventory.ColorAccessor;
+import dev.fulcrum.fma.features.sortInventory.ColorAccessor;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.WoolCarpetBlock;
+import net.minecraft.world.level.block.AbstractBannerBlock;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(WoolCarpetBlock.class)
-public class MixinWoolCarpetBlock implements ColorAccessor {
+@Mixin(AbstractBannerBlock.class)
+public class MixinAbstractBannerBlockBannerBlock implements ColorAccessor {
     @Shadow
     @Final
     private DyeColor color;

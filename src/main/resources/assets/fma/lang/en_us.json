@@ -1,0 +1,18 @@
+{
+  "fma.gui.title.configs": "Fulcrum Masa Addition - Config - Version: %s",
+  "fma.config.category.all.name": "All",
+  "fma.config.category.generic.name": "Generic",
+  "fma.config.category.feature.name": "Feature",
+
+  "fma.config.option.openConfigGui.name": "openConfigGui",
+  "fma.config.option.openConfigGui.comment": "A hotkey to open the in-game Config GUI",
+
+  "fma.config.option.sortInventory.name": "sortInventory",
+  "fma.config.option.sortInventory.comment": "A hotkey to sort inventory.",
+  "fma.config.option.sortInventoryShulkerBoxLast.name": "sortInventoryShulkerBoxLast",
+  "fma.config.option.sortInventoryShulkerBoxLast.comment": "Sort inventory shulker box last.",
+  "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.name": "sortInventorySupportEmptyShulkerBoxStack",
+  "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.comment": "Support empty shulker box stack when sort inventory.",
+  "fma.config.option.betterFakeSneaking.name": "betterFakeSneaking",
+  "fma.config.option.betterFakeSneaking.comment": "Player can move down 1 height when fakeSneaking."
+}

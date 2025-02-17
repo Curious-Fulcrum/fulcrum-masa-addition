@@ -1,7 +1,7 @@
-package dev.fulcrum.dma.features.sortInventory;
+package dev.fulcrum.fma.features.sortInventory;
 
-import dev.fulcrum.dma.SharedConstants;
-import dev.fulcrum.dma.mixin.accessor.AbstractContainerScreenAccessor;
+import dev.fulcrum.fma.SharedConstants;
+import dev.fulcrum.fma.mixin.accessor.AbstractContainerScreenAccessor;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
