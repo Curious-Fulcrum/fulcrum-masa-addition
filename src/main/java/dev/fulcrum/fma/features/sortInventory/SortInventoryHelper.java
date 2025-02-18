@@ -195,13 +195,16 @@ public class SortInventoryHelper {
         IntList sortQueue = new IntArrayList();
         if (size <= 0) return sortQueue;
         List<ObjectIntPair<ItemStack>> sorted = new ArrayList<>(size);
+        boolean[] emptySimulation = new boolean[size];
 
         boolean allShulkerBox = true;
         for (int i = begin; i < end; i++) {
             var stack = stacks.get(i);
             sorted.add(ObjectIntPair.of(stack, i));
-            if (allShulkerBox && !stack.isEmpty() && !ShulkerBoxItemHelper.isShulkerBoxBlockItem(stack))
+            boolean isEmpty = emptySimulation[i - begin] = stack.isEmpty();
+            if (allShulkerBox && !isEmpty && !ShulkerBoxItemHelper.isShulkerBoxBlockItem(stack)) {
                 allShulkerBox = false;
+            }
         }
         sorted.sort(new ItemStackComparator(allShulkerBox));
 
@@ -209,22 +212,24 @@ public class SortInventoryHelper {
         var map = new Int2IntOpenHashMap(size);
         for (int i = 0; i < size; i++) {
             var stackInfo = sorted.get(i);
-            if (!stackInfo.left().isEmpty())
-                map.put(stackInfo.rightInt(), i + begin);
+            if (!stackInfo.left().isEmpty()) map.put(stackInfo.rightInt(), i + begin);
         }
-
 
         int oldIndex = 0;
         boolean interrupted = true;
         while (!map.isEmpty()) {
             if (interrupted) //noinspection OptionalGetWithoutIsPresent
-                oldIndex = map.keySet().intStream().findAny().getAsInt();
+                oldIndex = map.keySet().intParallelStream().findAny().getAsInt();
             int newIndex = map.remove(oldIndex);
             if (oldIndex != newIndex) {
-                if (interrupted) sortQueue.add(oldIndex);
+                if (interrupted) {
+                    sortQueue.add(oldIndex);
+                    emptySimulation[oldIndex - begin] = true; // sync the simulation
+                }
                 sortQueue.add(newIndex);
                 oldIndex = newIndex;
-                interrupted = stacks.get(oldIndex).isEmpty();
+                interrupted = emptySimulation[newIndex - begin];
+                if (interrupted) emptySimulation[newIndex - begin] = false;
             } else interrupted = true;
         }
         return sortQueue;

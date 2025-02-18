@@ -29,7 +29,7 @@ public class Configs {
     @Config(category = ConfigCategory.GENERIC)
     public static MagicConfigBoolean sortInventoryShulkerBoxLast = cf.newConfigBoolean("sortInventoryShulkerBoxLast", true);
 
-    @Dependencies(require = @Dependency("tweakeroo"))
+    @Dependencies(require = {@Dependency("tweakeroo"), @Dependency("fca")})
     @Config(category = ConfigCategory.GENERIC)
     public static MagicConfigBoolean sortInventorySupportEmptyShulkerBoxStack = cf.newConfigBoolean("sortInventorySupportEmptyShulkerBoxStack", false);
 

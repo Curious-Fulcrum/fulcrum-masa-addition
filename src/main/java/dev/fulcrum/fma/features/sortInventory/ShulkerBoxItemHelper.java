@@ -14,7 +14,7 @@ public class ShulkerBoxItemHelper {
     public static boolean isEmptyShulkerBoxItem(ItemStack itemStack) {
         if (!ShulkerBoxItemHelper.isShulkerBoxBlockItem(itemStack)) return false;
         var contents = itemStack.get(DataComponents.CONTAINER);
-        return contents != null && contents.stream().allMatch(ItemStack::isEmpty);
+        return contents != null && contents.nonEmptyItems().iterator().hasNext();
     }
 
     public static boolean isShulkerBoxBlockItem(@NotNull ItemStack itemStack) {

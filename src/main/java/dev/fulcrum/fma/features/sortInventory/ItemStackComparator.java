@@ -133,8 +133,8 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
         boolean hasPatchA = patchA != DataComponentPatch.EMPTY;
         boolean hasPatchB = patchB != DataComponentPatch.EMPTY;
 
-        if (hasPatchA && !hasPatchB) return -1;
-        else if (!hasPatchA && hasPatchB) return 1;
+        if (hasPatchA && !hasPatchB) return 1;
+        else if (!hasPatchA && hasPatchB) return -1;
         else if (hasPatchA) {
             int subtraction = comparePrimeData(patchA, patchB);
             return subtraction != 0 ? subtraction : hashCode(patchA) - hashCode(patchB);
