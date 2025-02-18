@@ -1,24 +1,24 @@
 package dev.fulcrum.fma.features.sortInventory;
 
-import com.google.common.collect.Maps;
 import dev.fulcrum.fma.Configs;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
 
-    private static final Map<DyeColor, Integer> DYE_COLOR_MAPPING = Maps.newHashMap();
-    private static final Map<MapColor, Integer> MAP_COLOR_MAPPING = Maps.newHashMap();
+    private static final Object2IntMap<DyeColor> DYE_COLOR_MAPPING = new Object2IntOpenHashMap<>();
+    private static final Object2IntMap<MapColor> MAP_COLOR_MAPPING = new Object2IntOpenHashMap<>();
 
     static {
         DYE_COLOR_MAPPING.put(null, 0);
@@ -82,7 +82,8 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
     @Override
     public int compare(ObjectIntPair<ItemStack> infoA, ObjectIntPair<ItemStack> infoB) {
         ItemStack a = infoA.left(), b = infoB.left();
-        int aId = Item.getId(a.getItem()), bId = Item.getId(b.getItem());
+        Item itemA = a.getItem(), itemB = b.getItem();
+        int aId = Item.getId(itemA), bId = Item.getId(itemB);
 
         if (Configs.sortInventoryShulkerBoxLast.getBooleanValue() && !allShulkerBox)
             if (ShulkerBoxItemHelper.isShulkerBoxBlockItem(a) && !ShulkerBoxItemHelper.isShulkerBoxBlockItem(b))
@@ -90,52 +91,82 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
             else if (!ShulkerBoxItemHelper.isShulkerBoxBlockItem(a) && ShulkerBoxItemHelper.isShulkerBoxBlockItem(b))
                 return -1;
 
-        if (a.isEmpty() && !b.isEmpty()) return 1;
-        else if (!a.isEmpty() && b.isEmpty()) return -1;
-        else if (a.isEmpty()) return 0;
+        // if item is empty, then id always equals 0
+        if (aId == 0 && bId != 0) return 1;
+        else if (aId != 0 && bId == 0) return -1;
+        else if (aId == 0) return 0;
 
-        if (ShulkerBoxItemHelper.isShulkerBoxBlockItem(a) && ShulkerBoxItemHelper.isShulkerBoxBlockItem(b) && a.getItem() == b.getItem())
+        if (ShulkerBoxItemHelper.isShulkerBoxBlockItem(a) && ShulkerBoxItemHelper.isShulkerBoxBlockItem(b) && itemA == itemB)
             return -ShulkerBoxItemHelper.compareShulkerBox(a.get(DataComponents.CONTAINER), b.get(DataComponents.CONTAINER));
 
-        if (a.getItem() instanceof BlockItem blockItemA && b.getItem() instanceof BlockItem blockItemB) {
+        if (itemA instanceof BlockItem blockItemA && itemB instanceof BlockItem blockItemB) {
             Block blockA = blockItemA.getBlock(), blockB = blockItemB.getBlock();
 
-            if (blockA instanceof ColorAccessor accessorA && blockB instanceof ColorAccessor accessorB)
-                return DYE_COLOR_MAPPING.get(accessorA.fma$getColor()) - DYE_COLOR_MAPPING.get(accessorB.fma$getColor());
+            if (blockA instanceof AbstractBannerBlock && blockB instanceof AbstractBannerBlock
+                    || blockA instanceof BedBlock && blockB instanceof BedBlock
+                    || blockA instanceof ShulkerBoxBlock && blockB instanceof ShulkerBoxBlock
+                    || blockA instanceof StainedGlassBlock && blockB instanceof StainedGlassBlock
+                    || blockA instanceof StainedGlassPaneBlock && blockB instanceof StainedGlassPaneBlock
+                    || blockA instanceof WoolCarpetBlock && blockB instanceof WoolCarpetBlock)
+                return DYE_COLOR_MAPPING.getInt(((ColorAccessor) blockA).fma$getColor())
+                        - DYE_COLOR_MAPPING.getInt(((ColorAccessor) blockB).fma$getColor());
 
             String ida = BuiltInRegistries.BLOCK.getKey(blockA).getPath();
             String idb = BuiltInRegistries.BLOCK.getKey(blockB).getPath();
 
-            if (bothContains("wool", ida, idb)
-                    || bothContains("terracotta", ida, idb)
-                    || bothContains("concrete", ida, idb)
-                    || bothContains("candle", ida, idb)) {
+            if (bothEndsWith("wool", ida, idb)
+                    || bothEndsWith("terracotta", ida, idb)
+                    || bothEndsWith("concrete", ida, idb)
+                    || bothEndsWith("candle", ida, idb))
                 return MAP_COLOR_MAPPING.getOrDefault(blockA.defaultMapColor(), 0)
                         - MAP_COLOR_MAPPING.getOrDefault(blockB.defaultMapColor(), 0);
-            }
         }
 
-        if (a.getItem() instanceof DyeItem dyeA && b.getItem() instanceof DyeItem dyeB)
-            return DYE_COLOR_MAPPING.get(dyeA.getDyeColor()) - DYE_COLOR_MAPPING.get(dyeB.getDyeColor());
+        if (itemA instanceof DyeItem dyeA && itemB instanceof DyeItem dyeB)
+            return DYE_COLOR_MAPPING.getInt(dyeA.getDyeColor()) - DYE_COLOR_MAPPING.getInt(dyeB.getDyeColor());
 
-        if (aId == bId) {
-            var patchA = a.getComponentsPatch();
-            var patchB = b.getComponentsPatch();
-            boolean hasPatchA = patchA != DataComponentPatch.EMPTY;
-            boolean hasPatchB = patchB != DataComponentPatch.EMPTY;
+        if (aId != bId) return aId - bId;
 
-            if (hasPatchA && !hasPatchB) return -1;
-            else if (!hasPatchA && hasPatchB) return 1;
-            else if (hasPatchA)
-                return Objects.compare(patchA, patchB, Comparator.comparingInt(DataComponentPatch::hashCode));
+        // 相同物品
+        var patchA = a.getComponentsPatch();
+        var patchB = b.getComponentsPatch();
+        boolean hasPatchA = patchA != DataComponentPatch.EMPTY;
+        boolean hasPatchB = patchB != DataComponentPatch.EMPTY;
 
-            // 物品少的排在后面
-            return b.getCount() - a.getCount();
+        if (hasPatchA && !hasPatchB) return -1;
+        else if (!hasPatchA && hasPatchB) return 1;
+        else if (hasPatchA) {
+            int subtraction = comparePrimeData(patchA, patchB);
+            return subtraction != 0 ? subtraction : hashCode(patchA) - hashCode(patchB);
         }
-        return aId - bId;
+
+        // 物品少的排在后面
+        return b.getCount() - a.getCount();
     }
 
-    private static boolean bothContains(String target, @NotNull String a, @NotNull String b) {
-        return a.contains(target) && b.contains(target);
+    private static boolean bothEndsWith(String target, @NotNull String a, @NotNull String b) {
+        return a.endsWith(target) && b.endsWith(target);
+    }
+
+    private static final List<DataComponentType<?>> PRIME_DATA_TYPES = List.of(
+            DataComponents.CUSTOM_NAME, DataComponents.ENCHANTMENTS, DataComponents.DAMAGE
+    );
+
+    private static int hashCode(DataComponentPatch component) {
+        int keyHash = 0, valueHash = 0;
+        for (var entry : component.entrySet()) {
+            if (PRIME_DATA_TYPES.contains(entry.getKey())) continue;
+            keyHash += entry.getKey().hashCode();
+            valueHash += entry.getValue().hashCode();
+        }
+        return keyHash * 31 + valueHash;
+    }
+
+    private static int comparePrimeData(DataComponentPatch a, DataComponentPatch b) {
+        for (var dataType : ItemStackComparator.PRIME_DATA_TYPES) {
+            int subtraction = Objects.hashCode(a.get(dataType)) - Objects.hashCode(b.get(dataType));
+            if (subtraction != 0) return subtraction;
+        }
+        return 0;
     }
 }

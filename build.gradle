@@ -58,6 +58,8 @@ loom {
         client {
             programArgs("--username", "dev")
         }
+
+        remove server
     }
 }
 

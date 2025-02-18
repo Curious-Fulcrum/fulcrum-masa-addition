@@ -9,7 +9,6 @@ import static dev.fulcrum.fma.SharedConstants.MOD_ID;
 
 public class FulcrumMasaAddition implements ClientModInitializer {
 
-
     @Override
     public void onInitializeClient() {
         InitializationHandler.getInstance().registerInitializationHandler(() ->
