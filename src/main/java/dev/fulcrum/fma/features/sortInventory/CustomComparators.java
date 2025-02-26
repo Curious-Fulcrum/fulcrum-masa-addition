@@ -4,16 +4,18 @@ import dev.fulcrum.fma.Configs;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
 
@@ -128,20 +130,10 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
         if (aId != bId) return aId - bId;
 
         // 相同物品
-        var patchA = a.getComponentsPatch();
-        var patchB = b.getComponentsPatch();
-        boolean hasPatchA = patchA != DataComponentPatch.EMPTY;
-        boolean hasPatchB = patchB != DataComponentPatch.EMPTY;
-
-        if (hasPatchA && !hasPatchB) return 1;
-        else if (!hasPatchA && hasPatchB) return -1;
-        else if (hasPatchA) {
-            int subtraction = comparePrimeData(patchA, patchB);
-            return subtraction != 0 ? subtraction : hashCode(patchA) - hashCode(patchB);
-        }
-
-        // 物品少的排在后面
-        return b.getCount() - a.getCount();
+        int difference = comparePrimeData(a, b);
+        if (difference != 0) return difference;
+        // 物品少的在后面
+        return (difference = hashCodeOfPatch(a) - hashCodeOfPatch(b)) != 0 ? difference : b.getCount() - a.getCount();
     }
 
     private static boolean bothEndsWith(String target, @NotNull String a, @NotNull String b) {
@@ -152,21 +144,47 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
             DataComponents.CUSTOM_NAME, DataComponents.ENCHANTMENTS, DataComponents.DAMAGE
     );
 
-    private static int hashCode(DataComponentPatch component) {
-        int keyHash = 0, valueHash = 0;
-        for (var entry : component.entrySet()) {
-            if (PRIME_DATA_TYPES.contains(entry.getKey())) continue;
-            keyHash += entry.getKey().hashCode();
-            valueHash += entry.getValue().hashCode();
-        }
-        return keyHash * 31 + valueHash;
+    private static int hashCodeOfPatch(ItemStack itemStack) {
+        final AtomicInteger keyHash = new AtomicInteger(), valueHash = new AtomicInteger();
+        itemStack.getComponentsPatch().entrySet().parallelStream()
+                .filter(entry -> !PRIME_DATA_TYPES.contains(entry.getKey()))
+                .forEach(entry -> {
+                    keyHash.getAndAdd(entry.getKey().hashCode());
+                    valueHash.getAndAdd(entry.getValue().hashCode());
+                });
+        return keyHash.get() * 31 + valueHash.get();
     }
 
-    private static int comparePrimeData(DataComponentPatch a, DataComponentPatch b) {
-        for (var dataType : ItemStackComparator.PRIME_DATA_TYPES) {
-            int subtraction = Objects.hashCode(a.get(dataType)) - Objects.hashCode(b.get(dataType));
-            if (subtraction != 0) return subtraction;
-        }
-        return 0;
+    private static <T> int compareData(ItemStack a, ItemStack b, DataComponentType<T> type,
+                                       T defaultValue, Comparator<T> comparator) {
+        T dataA = a.getOrDefault(type, defaultValue), dataB = b.getOrDefault(type, defaultValue);
+        return comparator.compare(dataA, dataB);
     }
+
+    private static int comparePrimeData(ItemStack a, ItemStack b) {
+        int result = compareData(a, b, DataComponents.CUSTOM_NAME, Component.empty(), Comparator.comparing(Component::getString));
+        if (result != 0) return result;
+        result = compareData(a, b, DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY, new EnchantmentsComparator());
+        if (result != 0) return result;
+        result = compareData(a, b, DataComponents.DAMAGE, 0, Integer::compareTo);
+        return result;
+    }
+}
+
+class EnchantmentsComparator implements Comparator<ItemEnchantments> {
+
+    @Override
+    public int compare(ItemEnchantments e1, ItemEnchantments e2) {
+        int differenceOfSize = e2.size() - e1.size(); // 附魔少的在后面
+        if (differenceOfSize != 0) return differenceOfSize;
+        return hashCode(e1) - hashCode(e2);
+    }
+
+    private static int hashCode(ItemEnchantments e) {
+        if (e == ItemEnchantments.EMPTY) return -1;
+        return e.entrySet().stream().parallel()
+                .mapToInt(entry -> entry.getKey().hashCode() + entry.getIntValue())
+                .sum();
+    }
+
 }
