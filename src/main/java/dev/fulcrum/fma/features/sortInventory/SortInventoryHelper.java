@@ -23,7 +23,7 @@ import top.hendrixshen.magiclib.api.compat.minecraft.world.item.ItemStackCompat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SortInventoryHelper {
+public abstract class SortInventoryHelper {
     private static final int SLOT_CLICKED_OUTSIDE = -999;
 
     public static void sort() {
@@ -31,7 +31,8 @@ public class SortInventoryHelper {
         var client = Minecraft.getInstance();
         var currentScreen = client.screen;
         var player = client.player;
-        if (!(currentScreen instanceof AbstractContainerScreen<?> screen) || currentScreen instanceof CreativeModeInventoryScreen)
+        if (!(currentScreen instanceof AbstractContainerScreen<?> screen) ||
+                currentScreen instanceof CreativeModeInventoryScreen creative && creative.isInventoryOpen())
             return;
         var hoveredSlot = ((AbstractContainerScreenAccessor) screen).getHoveredSlot();
         if (hoveredSlot == null || client.gameMode == null || player == null) return;
