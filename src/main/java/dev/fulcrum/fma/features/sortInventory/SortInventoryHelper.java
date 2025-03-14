@@ -2,7 +2,6 @@ package dev.fulcrum.fma.features.sortInventory;
 
 import dev.fulcrum.fma.SharedConstants;
 import dev.fulcrum.fma.mixin.accessor.AbstractContainerScreenAccessor;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.Minecraft;
@@ -38,29 +37,16 @@ public abstract class SortInventoryHelper {
         if (hoveredSlot == null || client.gameMode == null || player == null) return;
 
         var container = player.containerMenu;
-        var sortRangeAndIgnoreList = getSortRangeAndIgnoreList(container, hoveredSlot);
-        if (sortRangeAndIgnoreList == null) return;
-        var sortRange = sortRangeAndIgnoreList.left();
-        var ignoreList = sortRangeAndIgnoreList.right();
+        var sortRange = getSortRange(container, hoveredSlot);
+        if (sortRange == null) return;
 
         var cursorStack = container.getCarried().copy();
         var stacks = container.slots.stream().map(slot -> slot.getItem().copy()).collect(Collectors.toList());
         IntList mergeQueue, sortQueue;
         int begin = sortRange.leftInt(), end = sortRange.rightInt();
 
-        if (ignoreList.isEmpty()) {
-            mergeQueue = mergeItems(stacks, cursorStack, begin, end);
-            sortQueue = quickSort(stacks, begin, end);
-        } else {
-            mergeQueue = new IntArrayList(mergeItems(stacks, cursorStack, begin, ignoreList.getFirst()));
-            sortQueue = new IntArrayList(quickSort(stacks, begin, ignoreList.getFirst()));
-            for (int i = 1, limit = ignoreList.size(); i < limit; i++) {
-                mergeQueue.addAll(mergeItems(stacks, cursorStack, ignoreList.get(i - 1) + 1, ignoreList.get(i)));
-                sortQueue.addAll(quickSort(stacks, ignoreList.get(i - 1) + 1, ignoreList.get(i)));
-            }
-            mergeQueue.addAll(mergeItems(stacks, cursorStack, ignoreList.getLast() + 1, end));
-            sortQueue.addAll(quickSort(stacks, ignoreList.getLast() + 1, end));
-        }
+        mergeQueue = mergeItems(stacks, cursorStack, begin, end);
+        sortQueue = quickSort(stacks, begin, end);
 
         // do click
         for (int slotId : mergeQueue)
@@ -79,33 +65,31 @@ public abstract class SortInventoryHelper {
     }
 
     @Nullable
-    private static Pair<IntIntPair, List<Integer>> getSortRangeAndIgnoreList(AbstractContainerMenu container, @NotNull Slot hoveredSlot) {
+    private static IntIntPair getSortRange(AbstractContainerMenu container, @NotNull Slot hoveredSlot) {
         int mouseIdx = hoveredSlot.index;
         if (mouseIdx == 0 && hoveredSlot.getContainerSlot() != 0) mouseIdx = hoveredSlot.getContainerSlot();
 
         int left = mouseIdx, right = mouseIdx + 1;
 
         Class<?> clazz = container.slots.get(mouseIdx).container.getClass();
-        IntList ignoreList1 = new IntArrayList(), ignoreList2 = new IntArrayList();
-        if (SharedConstants.HAS_GCA && shouldIgnore(hoveredSlot.getItem())) ignoreList2.add(mouseIdx);
+        if (SharedConstants.HAS_GCA && shouldIgnore(container.slots.getFirst())) {
+            left = shouldIgnore(container.slots.get(26)) ? 27 : 18;
+            return IntIntPair.of(left, 54);
+        }
 
         for (int i = mouseIdx - 1; i >= 0; i--) {
-            var slot = container.slots.get(i);
-            if (clazz != slot.container.getClass()) {
+            if (clazz != container.slots.get(i).container.getClass()) {
                 left = i + 1;
                 break;
             } else if (i == 0) left = 0;
-            else if (SharedConstants.HAS_GCA && shouldIgnore(slot.getItem())) ignoreList1.add(i);
         }
 
         var limit = container.slots.size();
         for (int i = right; i < limit; i++) {
-            var slot = container.slots.get(i);
-            if (clazz != slot.container.getClass()) {
+            if (clazz != container.slots.get(i).container.getClass()) {
                 right = i;
                 break;
             } else if (i == limit - 1) right = limit;
-            else if (SharedConstants.HAS_GCA && shouldIgnore(slot.getItem())) ignoreList2.add(i);
         }
 
         if (hoveredSlot.container instanceof Inventory) {
@@ -123,13 +107,11 @@ public abstract class SortInventoryHelper {
                 else left += 27;
             }
         }
-        var result = ignoreList1.reversed();
-        result.addAll(ignoreList2);
-        return left + 1 == right ? null : Pair.of(IntIntPair.of(left, right), result);
+        return left + 1 == right ? null : IntIntPair.of(left, right);
     }
 
-    private static boolean shouldIgnore(ItemStack itemStack) {
-        var itemTag = itemStack.get(DataComponents.CUSTOM_DATA);
+    private static boolean shouldIgnore(Slot slot) {
+        var itemTag = slot.getItem().get(DataComponents.CUSTOM_DATA);
         return itemTag != null && !itemTag.isEmpty() && itemTag.contains("GcaClear");
     }
 

@@ -8,9 +8,19 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.AbstractBannerBlock;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.level.block.StainedGlassPaneBlock;
+import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -183,7 +193,10 @@ class EnchantmentsComparator implements Comparator<ItemEnchantments> {
     private static int hashCode(ItemEnchantments e) {
         if (e == ItemEnchantments.EMPTY) return -1;
         return e.entrySet().stream().parallel()
-                .mapToInt(entry -> entry.getKey().hashCode() + entry.getIntValue())
+                .mapToInt(entry -> {
+                    var enchantment = entry.getKey().value();
+                    return enchantment.hashCode() + enchantment.getMaxLevel() - entry.getIntValue();
+                })
                 .sum();
     }
 
