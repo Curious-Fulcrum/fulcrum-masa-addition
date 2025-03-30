@@ -14,5 +14,7 @@
   "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.name": "sortInventorySupportEmptyShulkerBoxStack",
   "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.comment": "Support empty shulker box stack when sort inventory.",
   "fma.config.option.betterFakeSneaking.name": "betterFakeSneaking",
-  "fma.config.option.betterFakeSneaking.comment": "Player can move down 1 height when fakeSneaking."
+  "fma.config.option.betterFakeSneaking.comment": "Player can move down 1 height when fakeSneaking.",
+  "fma.config.option.onlyRenderLibrarianRestockTime.name": "onlyRenderLibrarianRestockTime",
+  "fma.config.option.onlyRenderLibrarianRestockTime.comment": "Only render restock time for Librarian."
 }

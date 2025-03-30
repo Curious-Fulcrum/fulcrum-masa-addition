@@ -52,6 +52,7 @@ dependencies {
     modApi(annotationProcessor("top.hendrixshen.magiclib:magiclib-all-${project.minecraft_version}-fabric:${project.magiclib_version}"))
     modImplementation "com.github.sakura-ryoko:tweakeroo:${project.tweakeroo_version}"
     modImplementation "com.github.sakura-ryoko:itemscroller:${project.itemscroller_version}"
+    modImplementation "maven.modrinth:masa-gadget:${project.masa_gadget_version}"
 }
 
 loom {

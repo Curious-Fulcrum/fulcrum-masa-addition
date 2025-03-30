@@ -13,5 +13,7 @@
   "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.name": "整理仓库时支持空潜影盒堆叠",
   "fma.config.option.sortInventorySupportEmptyShulkerBoxStack.comment": "整理仓库时支持空潜影盒堆叠（请配合 FCA 使用）",
   "fma.config.option.betterFakeSneaking.name": "更好的伪潜行",
-  "fma.config.option.betterFakeSneaking.comment": "在伪潜行时玩家可以向下移动 1 格高"
+  "fma.config.option.betterFakeSneaking.comment": "在伪潜行时玩家可以向下移动 1 格高",
+  "fma.config.option.onlyRenderLibrarianRestockTime.name": "onlyRenderLibrarianRestockTime",
+  "fma.config.option.onlyRenderLibrarianRestockTime.comment": "仅渲染图书管理员补货时间"
 }

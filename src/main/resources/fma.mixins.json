@@ -14,7 +14,7 @@
     "accessor.color.MixinStainedGlassBlock",
     "accessor.color.MixinStainedGlassPaneBlock",
     "accessor.color.MixinWoolCarpetBlock",
-
-    "features.betterFakeSneaking.MixinPlayer"
+    "features.betterFakeSneaking.MixinPlayer",
+    "features.onlyRenderLibrarianRestockTime.MixinVillagerNextRestockTimeInfo"
   ]
 }
