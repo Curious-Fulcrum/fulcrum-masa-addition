@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.12-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -52,7 +52,6 @@ dependencies {
     modApi(annotationProcessor("top.hendrixshen.magiclib:magiclib-all-${project.minecraft_version}-fabric:${project.magiclib_version}"))
     modImplementation "com.github.sakura-ryoko:tweakeroo:${project.tweakeroo_version}"
     modImplementation "com.github.sakura-ryoko:itemscroller:${project.itemscroller_version}"
-    modImplementation "maven.modrinth:masa-gadget:${project.masa_gadget_version}"
 }
 
 loom {
@@ -79,7 +78,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 23
+    it.options.release = 25
 }
 
 java {

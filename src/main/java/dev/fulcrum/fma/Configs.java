@@ -37,10 +37,6 @@ public class Configs {
     @Config(category = ConfigCategory.FEATURE)
     public static MagicConfigBoolean betterFakeSneaking = cf.newConfigBoolean("betterFakeSneaking", true);
 
-    @Dependencies(require = @Dependency("masa_gadget_mod"))
-    @Config(category = ConfigCategory.FEATURE)
-    public static MagicConfigBoolean onlyRenderLibrarianRestockTime = cf.newConfigBoolean("onlyRenderLibrarianRestockTime", false);
-
     public static void init() {
         cm.parseConfigClass(Configs.class);
         SharedConstants.CONFIG_HANDLER.setPostDeserializeCallback(_ -> sortInventory.getKeybind().setSettings(KeybindSettings.GUI));
