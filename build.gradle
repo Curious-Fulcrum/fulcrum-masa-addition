@@ -51,7 +51,6 @@ dependencies {
     modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
     modApi(annotationProcessor("top.hendrixshen.magiclib:magiclib-all-${project.minecraft_version}-fabric:${project.magiclib_version}"))
     modImplementation "com.github.sakura-ryoko:tweakeroo:${project.tweakeroo_version}"
-    modImplementation "com.github.sakura-ryoko:itemscroller:${project.itemscroller_version}"
 }
 
 loom {
