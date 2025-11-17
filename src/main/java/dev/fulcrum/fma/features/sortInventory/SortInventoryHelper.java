@@ -31,7 +31,7 @@ public abstract class SortInventoryHelper {
         var currentScreen = client.screen;
         var player = client.player;
         if (!(currentScreen instanceof AbstractContainerScreen<?> screen) ||
-                currentScreen instanceof CreativeModeInventoryScreen creative && creative.isInventoryOpen())
+                (currentScreen instanceof CreativeModeInventoryScreen creative && !creative.isInventoryOpen()))
             return;
         var hoveredSlot = ((AbstractContainerScreenAccessor) screen).getHoveredSlot();
         if (hoveredSlot == null || client.gameMode == null || player == null) return;
