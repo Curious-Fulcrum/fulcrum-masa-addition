@@ -35,7 +35,7 @@ public class Configs {
 
     @Dependencies(require = @Dependency("tweakeroo"))
     @Config(category = ConfigCategory.FEATURE)
-    public static MagicConfigBoolean betterFakeSneaking = cf.newConfigBoolean("betterFakeSneaking", true);
+    public static MagicConfigBoolean betterSneaking = cf.newConfigBoolean("betterFakeSneaking", true);
 
     public static void init() {
         cm.parseConfigClass(Configs.class);
