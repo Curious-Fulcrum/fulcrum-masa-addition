@@ -1,7 +1,5 @@
 package dev.fulcrum.fma.features.sortInventory;
 
-import dev.fulcrum.fma.Configs;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -11,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ShulkerBoxItemHelper {
 
-    static boolean isEmptyShulkerBoxItem(ItemStack itemStack) {
-        if (!ShulkerBoxItemHelper.isShulkerBoxBlockItem(itemStack)) return false;
-        var contents = itemStack.get(DataComponents.CONTAINER);
-        return contents != null && contents.nonEmptyItems().iterator().hasNext();
-    }
+//    static boolean isEmptyShulkerBoxItem(ItemStack itemStack) {
+//        if (!ShulkerBoxItemHelper.isShulkerBoxBlockItem(itemStack)) return false;
+//        var contents = itemStack.get(DataComponents.CONTAINER);
+//        return contents != null && contents.nonEmptyItems().iterator().hasNext();
+//    }
 
     static boolean isShulkerBoxBlockItem(@NotNull ItemStack itemStack) {
         return itemStack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof ShulkerBoxBlock;
@@ -29,8 +27,9 @@ public interface ShulkerBoxItemHelper {
     }
 
     static int getMaxCount(ItemStack itemStack) {
-        return Configs.sortInventorySupportEmptyShulkerBoxStack.getBooleanValue() &&
-                ShulkerBoxItemHelper.isEmptyShulkerBoxItem(itemStack) ? 64 : itemStack.getMaxStackSize();
+//        return Configs.sortInventorySupportEmptyShulkerBoxStack.getBooleanValue() &&
+//                ShulkerBoxItemHelper.isEmptyShulkerBoxItem(itemStack) ? 64 : itemStack.getMaxStackSize();
+        return itemStack.getMaxStackSize();
     }
 
     static boolean isStackable(ItemStack itemStack) {
