@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+version = project.mod_version + "-mc" + project.minecraft_version
 group = project.maven_group
 
 base {
@@ -35,7 +35,7 @@ repositories {
     }
     maven {
         name = "Nyan Maven"
-        url = "https://maven.hendrixshen.top/releases"
+        url = "https://maven.hendrixshen.moe/releases"
     }
 }
 
