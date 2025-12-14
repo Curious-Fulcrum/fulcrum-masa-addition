@@ -32,7 +32,7 @@ public class Configs {
 
     public static void init() {
         cm.parseConfigClass(Configs.class);
-        SharedConstants.CONFIG_HANDLER.setPostDeserializeCallback(_ -> sortInventory.getKeybind().setSettings(KeybindSettings.GUI));
+        SharedConstants.CONFIG_HANDLER.setPostDeserializeCallback(handler -> sortInventory.getKeybind().setSettings(KeybindSettings.GUI));
 
         MagicConfigManager.setHotkeyCallback(Configs.openConfigGui, () -> GuiBase.openGui(getConfigGui()), true);
         MagicConfigManager.setHotkeyCallback(Configs.sortInventory, SortInventoryHelper::sort, false);

@@ -23,7 +23,7 @@ public abstract class MixinPlayer extends Entity {
     }
 
     @Shadow
-    protected abstract boolean canFallAtLeast(double d, double e, float f);
+    protected abstract boolean canFallAtLeast(double dx, double dz, double dy);
 
 
     @WrapOperation(method = "maybeBackOffFromEdge", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;maxUpStep()F"))
@@ -32,15 +32,15 @@ public abstract class MixinPlayer extends Entity {
         return shouldApplyTweak() ? MAX_STEP_HEIGHT : original.call(player);
     }
 
-    @WrapOperation(method = "maybeBackOffFromEdge", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canFallAtLeast(DDF)Z"))
-    private boolean checkFallAtLava(Player player, double d, double e, float f, Operation<Boolean> original) {
+    @WrapOperation(method = "maybeBackOffFromEdge", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canFallAtLeast(DDD)Z"))
+    private boolean checkFallAtLava(Player player, double dx, double dz, double dy, Operation<Boolean> original) {
         // Patched value if betterSneak is enabled, otherwise vanilla value.
-        boolean result = original.call(player, d, e, f);
+        boolean result = original.call(player, dx, dz, dy);
 
         if (!shouldApplyTweak()) return result;
 
         // Always vanilla value and bypass WrapOperation chain invoke.
-        boolean vanillaResult = canFallAtLeast(d, e, originalStepHeight);
+        boolean vanillaResult = canFallAtLeast(dx, dz, originalStepHeight);
         if (vanillaResult && !result && player.level().getFluidState(player.blockPosition().below()).getType() instanceof LavaFluid)
             return true;
         return result;

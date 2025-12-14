@@ -48,7 +48,7 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     modRuntimeOnly "maven.modrinth:carpet:${project.carpet_version}"
-    modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
+//    modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
     modApi(annotationProcessor("top.hendrixshen.magiclib:magiclib-all-${project.minecraft_version}-fabric:${project.magiclib_version}"))
 }
 
@@ -76,7 +76,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
+    it.options.release = 21
 }
 
 java {
