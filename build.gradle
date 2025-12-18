@@ -22,7 +22,6 @@ repositories {
         url = 'https://maven.parchmentmc.org'
     }
     maven { url = "https://jitpack.io" }
-    maven { url = 'https://masa.dy.fi/maven' }
     maven {
         url = 'https://maven.terraformersmc.com/releases/'
         content {
@@ -32,10 +31,6 @@ repositories {
     maven {
         name = "Modrinth Maven"
         url = "https://api.modrinth.com/maven"
-    }
-    maven {
-        name = "Nyan Maven"
-        url = "https://maven.hendrixshen.moe/releases"
     }
 }
 
@@ -53,7 +48,6 @@ dependencies {
     modRuntimeOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modRuntimeOnly "maven.modrinth:carpet:${project.carpet_version}"
 //    modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
-//    modApi(annotationProcessor("top.hendrixshen.magiclib:magiclib-all-${project.minecraft_version}-fabric:${project.magiclib_version}"))
     modImplementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
 }
 
