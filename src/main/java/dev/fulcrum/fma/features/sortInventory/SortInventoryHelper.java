@@ -17,7 +17,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.hendrixshen.magiclib.api.compat.minecraft.world.item.ItemStackCompat;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -219,7 +218,7 @@ public abstract class SortInventoryHelper {
     }
 
     private static boolean canStackAddMore(@NotNull ItemStack target, ItemStack stack) {
-        return ItemStackCompat.isSameItemSameTags(target, stack)
+        return ItemStack.isSameItemSameComponents(target, stack)
                 && ShulkerBoxItemHelper.isStackable(target)
                 && target.getCount() < ShulkerBoxItemHelper.getMaxCount(target);
     }

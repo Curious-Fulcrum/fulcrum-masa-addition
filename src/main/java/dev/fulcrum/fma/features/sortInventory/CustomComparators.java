@@ -1,6 +1,6 @@
 package dev.fulcrum.fma.features.sortInventory;
 
-import dev.fulcrum.fma.Configs;
+import dev.fulcrum.fma.config.Configs;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;

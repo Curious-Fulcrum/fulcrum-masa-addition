@@ -1,22 +1,16 @@
 package dev.fulcrum.fma.compat;
 
-import dev.fulcrum.fma.SharedConstants;
-import top.hendrixshen.magiclib.api.compat.modmenu.ModMenuApiCompat;
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
+import dev.fulcrum.fma.config.GuiConfigs;
 
-import static dev.fulcrum.fma.SharedConstants.MOD_ID;
-
-public class ModMenuApiImpl implements ModMenuApiCompat {
+public class ModMenuApiImpl implements ModMenuApi {
     @Override
-    public ConfigScreenFactoryCompat<?> getConfigScreenFactoryCompat() {
-        return (screen) -> {
-            var configGui = SharedConstants.getConfigGui();
-            configGui.setParent(screen);
-            return configGui;
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return screen -> {
+            var gui = new GuiConfigs();
+            gui.setParent(screen);
+            return gui;
         };
-    }
-
-    @Override
-    public String getModIdCompat() {
-        return MOD_ID;
     }
 }

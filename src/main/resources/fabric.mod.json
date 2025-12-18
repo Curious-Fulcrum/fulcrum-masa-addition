@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "fma",
   "version": "${version}",
-  "name": "Fulcrum Masa Addition",
+  "name": "Fulcrum's Masa Addition",
   "description": "",
   "authors": [],
   "contact": {},
@@ -22,7 +22,6 @@
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
-    "fabric": "*",
     "minecraft": "${minecraft_version}"
   }
 }

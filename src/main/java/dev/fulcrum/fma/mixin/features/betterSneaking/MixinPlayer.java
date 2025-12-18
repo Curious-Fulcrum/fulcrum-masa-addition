@@ -2,7 +2,7 @@ package dev.fulcrum.fma.mixin.features.betterSneaking;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import dev.fulcrum.fma.Configs;
+import dev.fulcrum.fma.config.Configs;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
