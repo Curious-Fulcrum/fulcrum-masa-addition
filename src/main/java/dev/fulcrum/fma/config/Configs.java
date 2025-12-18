@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class Configs implements IConfigHandler {
-    private static final String PREFIX = "fma.config.option";
+    private static final String PREFIX = "fma.config";
     private final Path configPath = FabricLoader.getInstance().getConfigDir().resolve("fma.json");
 
 
@@ -26,7 +26,7 @@ public class Configs implements IConfigHandler {
 
     public static final ConfigBoolean sortInventoryShulkerBoxLast = new ConfigBoolean("sortInventoryShulkerBoxLast", true).apply(PREFIX);
 
-    public static final ConfigBoolean betterSneaking = new ConfigBoolean("betterFakeSneaking", true).apply(PREFIX);
+    public static final ConfigBoolean betterSneaking = new ConfigBoolean("betterSneaking", true).apply(PREFIX);
 
 
     static final List<ConfigHotkey> HOTKEYS = List.of(openConfigGui, sortInventory);
