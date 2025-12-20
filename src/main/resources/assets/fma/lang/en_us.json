@@ -7,8 +7,6 @@
   "fma.config.comment.sortInventory": "A hotkey to sort inventory.",
   "fma.config.name.sortInventoryShulkerBoxLast": "sortInventoryShulkerBoxLast",
   "fma.config.comment.sortInventoryShulkerBoxLast": "Sort inventory shulker box last.",
-  "fma.config.name.sortInventorySupportEmptyShulkerBoxStack": "sortInventorySupportEmptyShulkerBoxStack",
-  "fma.config.comment.sortInventorySupportEmptyShulkerBoxStack": "Support empty shulker box stack when sort inventory.",
   "fma.config.name.betterSneaking": "betterSneaking",
   "fma.config.comment.betterSneaking": "Player can move down 1 height when sneaking."
 }

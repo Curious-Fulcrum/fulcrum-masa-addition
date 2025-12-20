@@ -7,8 +7,6 @@
   "fma.config.comment.sortInventory": "整理仓库的快捷键",
   "fma.config.name.sortInventoryShulkerBoxLast": "整理仓库时潜影盒放在最后",
   "fma.config.comment.sortInventoryShulkerBoxLast": "整理仓库时潜影盒放在最后",
-  "fma.config.name.sortInventorySupportEmptyShulkerBoxStack": "整理仓库时支持空潜影盒堆叠",
-  "fma.config.comment.sortInventorySupportEmptyShulkerBoxStack": "整理仓库时支持空潜影盒堆叠（请配合 FCA 使用）",
   "fma.config.name.betterSneaking": "更好的潜行",
   "fma.config.comment.betterSneaking": "在潜行时玩家可以向下移动 1 格高"
 }
