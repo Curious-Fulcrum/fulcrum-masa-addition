@@ -8,12 +8,14 @@
   },
   "client": [
     "accessor.AbstractContainerScreenAccessor",
+    "accessor.VillagerAccessor",
     "accessor.color.MixinAbstractBannerBlockBannerBlock",
     "accessor.color.MixinBedBlock",
     "accessor.color.MixinShulkerBoxBlock",
     "accessor.color.MixinStainedGlassBlock",
     "accessor.color.MixinStainedGlassPaneBlock",
     "accessor.color.MixinWoolCarpetBlock",
-    "features.betterSneaking.MixinPlayer"
+    "features.betterSneaking.MixinPlayer",
+    "features.villagerRestockTime.MixinOverlayRendererVillagerInfo"
   ]
 }

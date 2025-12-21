@@ -28,9 +28,11 @@ public class Configs implements IConfigHandler {
 
     public static final ConfigBoolean betterSneaking = new ConfigBoolean("betterSneaking", true).apply(PREFIX);
 
+    public static final ConfigBoolean villagerRestockTime = new ConfigBoolean("villagerRestockTime", true).apply(PREFIX);
+
 
     static final List<ConfigHotkey> HOTKEYS = List.of(openConfigGui, sortInventory);
-    static final List<IConfigBase> GENERIC = List.of(sortInventoryShulkerBoxLast, betterSneaking);
+    static final List<IConfigBase> GENERIC = List.of(sortInventoryShulkerBoxLast, betterSneaking, villagerRestockTime);
     static final List<IConfigBase> ALL = List.of(openConfigGui, sortInventory, sortInventoryShulkerBoxLast, betterSneaking);
 
     public static void init() {

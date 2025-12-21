@@ -8,5 +8,7 @@
   "fma.config.name.sortInventoryShulkerBoxLast": "sortInventoryShulkerBoxLast",
   "fma.config.comment.sortInventoryShulkerBoxLast": "Sort inventory shulker box last.",
   "fma.config.name.betterSneaking": "betterSneaking",
-  "fma.config.comment.betterSneaking": "Player can move down 1 height when sneaking."
+  "fma.config.comment.betterSneaking": "Player can move down 1 height when sneaking.",
+  "fma.config.name.villagerRestockTime": "villagerRestockTime",
+  "fma.config.comment.villagerRestockTime": "Render villager's next restock time."
 }
