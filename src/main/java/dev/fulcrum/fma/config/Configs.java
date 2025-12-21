@@ -19,17 +19,15 @@ public class Configs implements IConfigHandler {
     private static final String PREFIX = "fma.config";
     private final Path configPath = FabricLoader.getInstance().getConfigDir().resolve("fma.json");
 
-
     public static final ConfigHotkey openConfigGui = new ConfigHotkey("openConfigGui", "F,C").apply(PREFIX);
 
-    public static final ConfigHotkey sortInventory = new ConfigHotkey("sortInventory", "R").apply(PREFIX);
+    public static final ConfigHotkey sortInventory = new ConfigHotkey("sortInventory", "R", KeybindSettings.GUI).apply(PREFIX);
 
     public static final ConfigBoolean sortInventoryShulkerBoxLast = new ConfigBoolean("sortInventoryShulkerBoxLast", true).apply(PREFIX);
 
     public static final ConfigBoolean betterSneaking = new ConfigBoolean("betterSneaking", true).apply(PREFIX);
 
     public static final ConfigBoolean villagerRestockTime = new ConfigBoolean("villagerRestockTime", true).apply(PREFIX);
-
 
     static final List<ConfigHotkey> HOTKEYS = List.of(openConfigGui, sortInventory);
     static final List<IConfigBase> GENERIC = List.of(sortInventoryShulkerBoxLast, betterSneaking, villagerRestockTime);
@@ -39,7 +37,6 @@ public class Configs implements IConfigHandler {
         var callbacks = new Callbacks();
         openConfigGui.getKeybind().setCallback(callbacks);
         sortInventory.getKeybind().setCallback(callbacks);
-        sortInventory.getKeybind().setSettings(KeybindSettings.GUI);
     }
 
     @Override
