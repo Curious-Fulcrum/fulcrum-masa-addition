@@ -14,6 +14,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Configs implements IConfigHandler {
     private static final String PREFIX = "fma.config";
@@ -31,7 +32,7 @@ public class Configs implements IConfigHandler {
 
     static final List<ConfigHotkey> HOTKEYS = List.of(openConfigGui, sortInventory);
     static final List<IConfigBase> GENERIC = List.of(sortInventoryShulkerBoxLast, betterSneaking, villagerRestockTime);
-    static final List<IConfigBase> ALL = List.of(openConfigGui, sortInventory, sortInventoryShulkerBoxLast, betterSneaking);
+    static final List<IConfigBase> ALL = Stream.concat(HOTKEYS.stream(), GENERIC.stream()).toList();
 
     public static void init() {
         var callbacks = new Callbacks();
