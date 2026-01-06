@@ -73,7 +73,7 @@ public abstract class SortInventoryHelper {
         int left = mouseIdx, right = mouseIdx + 1;
 
         Class<?> clazz = container.slots.get(mouseIdx).container.getClass();
-        if (SharedConstants.HAS_GCA && shouldIgnore(container.slots.getFirst())) {
+        if (SharedConstants.HAS_GCA && shouldIgnore(container.slots.getFirst()) && mouseIdx < 54) {
             left = shouldIgnore(container.slots.get(26)) ? 27 : 18;
             return IntIntPair.of(left, 54);
         }
