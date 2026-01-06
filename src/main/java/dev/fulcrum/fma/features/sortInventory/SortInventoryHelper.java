@@ -55,8 +55,10 @@ public abstract class SortInventoryHelper {
         // do click
         for (int slotId : mergeQueue)
             client.gameMode.handleInventoryMouseClick(container.containerId, slotId, 0, ClickType.PICKUP, player);
-        for (int slotId : sortQueue)
-            client.gameMode.handleInventoryMouseClick(container.containerId, slotId, 0, ClickType.PICKUP, player);
+        for (int slotId : sortQueue) {
+            // negative id to make bundle's strange action compatible
+            client.gameMode.handleInventoryMouseClick(container.containerId, slotId, Inventory.SLOT_OFFHAND, ClickType.SWAP, player);
+        }
 
         client.getSoundManager().play(mergeQueue.isEmpty() && sortQueue.isEmpty() ?
                 SimpleSoundInstance.forUI(SoundEvents.DISPENSER_FAIL, 1.0F) :
@@ -176,7 +178,7 @@ public abstract class SortInventoryHelper {
         int size = end - begin;
         IntList sortQueue = new IntArrayList();
         if (size <= 0) return sortQueue;
-        List<ObjectIntPair<ItemStack>> sorted = new ArrayList<>(size);
+        List<ObjectIntPair<ItemStack>> sorted = new ArrayList<>(size); // list of tuple (stack, index)
         boolean[] emptySimulation = new boolean[size];
 
         boolean allShulkerBox = true;
@@ -190,29 +192,33 @@ public abstract class SortInventoryHelper {
         }
         sorted.sort(new ItemStackComparator(allShulkerBox));
 
-        // map stack to tuple (oldIndex, newIndex)
+        // map stack to tuple (originIndex, targetIndex)
         var map = new Int2IntOpenHashMap(size);
+        map.defaultReturnValue(AbstractContainerMenu.SLOT_CLICKED_OUTSIDE);
         for (int i = 0; i < size; i++) {
             var stackInfo = sorted.get(i);
-            if (!stackInfo.left().isEmpty()) map.put(stackInfo.rightInt(), i + begin);
+            if (!stackInfo.left().isEmpty()) {
+                int originIndex = stackInfo.rightInt(), targetIndex = i + begin;
+                if (originIndex != targetIndex) map.put(originIndex, targetIndex);
+            }
         }
 
-        int oldIndex = 0;
-        boolean interrupted = true;
+        int originIndex = 0;
+        boolean offhandEmpty = true; // to reduce click times by recording whether slot offhand is empty
         while (!map.isEmpty()) {
-            if (interrupted) //noinspection OptionalGetWithoutIsPresent
-                oldIndex = map.keySet().intParallelStream().findAny().getAsInt();
-            int newIndex = map.remove(oldIndex);
-            if (oldIndex != newIndex) {
-                if (interrupted) {
-                    sortQueue.add(oldIndex);
-                    emptySimulation[oldIndex - begin] = true; // sync the simulation
+            if (offhandEmpty) originIndex = map.keySet().iterator().nextInt();
+            int targetIndex = map.remove(originIndex);
+            if (targetIndex != AbstractContainerMenu.SLOT_CLICKED_OUTSIDE) {
+                if (offhandEmpty) {
+                    sortQueue.add(originIndex);
+                    emptySimulation[originIndex - begin] = true; // sync the simulation
                 }
-                sortQueue.add(newIndex);
-                oldIndex = newIndex;
-                interrupted = emptySimulation[newIndex - begin];
-                if (interrupted) emptySimulation[newIndex - begin] = false;
-            } else interrupted = true;
+                sortQueue.add(targetIndex);
+
+                originIndex = targetIndex;
+                offhandEmpty = emptySimulation[targetIndex - begin];
+                emptySimulation[targetIndex - begin] = false;
+            } else offhandEmpty = true;
         }
         return sortQueue;
     }
