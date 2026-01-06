@@ -2,7 +2,10 @@ package dev.fulcrum.fma.features.sortInventory;
 
 import dev.fulcrum.fma.SharedConstants;
 import dev.fulcrum.fma.mixin.accessor.AbstractContainerScreenAccessor;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,15 +17,17 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class SortInventoryHelper {
-    private static final int SLOT_CLICKED_OUTSIDE = -999;
 
     public static void sort() {
         // check
@@ -49,14 +54,9 @@ public abstract class SortInventoryHelper {
 
         // do click
         for (int slotId : mergeQueue)
-            // 放入打捆包需要右键
-            if (slotId < 0 && slotId != SLOT_CLICKED_OUTSIDE)
-                client.gameMode.handleInventoryMouseClick(container.containerId, -slotId, 1, ClickType.PICKUP, player);
-            else
-                client.gameMode.handleInventoryMouseClick(container.containerId, slotId, 0, ClickType.PICKUP, player);
-        for (int slotId : sortQueue) {
             client.gameMode.handleInventoryMouseClick(container.containerId, slotId, 0, ClickType.PICKUP, player);
-        }
+        for (int slotId : sortQueue)
+            client.gameMode.handleInventoryMouseClick(container.containerId, slotId, 0, ClickType.PICKUP, player);
 
         client.getSoundManager().play(mergeQueue.isEmpty() && sortQueue.isEmpty() ?
                 SimpleSoundInstance.forUI(SoundEvents.DISPENSER_FAIL, 1.0F) :
@@ -147,23 +147,23 @@ public abstract class SortInventoryHelper {
     }
 
     /// @return 物品合并记录
-    private static @NotNull IntList tryMergeItem(List<ItemStack> stacks, ItemStack stackToAdd, int begin, int end) {
+    private static @NotNull IntList tryMergeItem(List<ItemStack> stacks, ItemStack stackToMerge, int begin, int end) {
         // merge in [begin, end)
         var mergeRecord = new IntArrayList();
         for (int i = begin; i < end; i++) {
             var stack = stacks.get(i);
-            if (stack.isEmpty() || !canStackAddMore(stack, stackToAdd)) continue;
+            if (stack.isEmpty() || !canStackAddMore(stack, stackToMerge)) continue;
 
             mergeRecord.add(i);
-            int available = ShulkerBoxItemHelper.getMaxCount(stack) - stack.getCount();
-            int count = stackToAdd.getCount();
+            int available = stack.getMaxStackSize() - stack.getCount();
+            int count = stackToMerge.getCount();
             if (available >= count) {
                 stack.grow(count);
-                stackToAdd.shrink(count);
+                stackToMerge.shrink(count);
                 break;
             } else {
                 stack.grow(available);
-                stackToAdd.shrink(available);
+                stackToMerge.shrink(available);
             }
         }
         return mergeRecord;
@@ -184,7 +184,7 @@ public abstract class SortInventoryHelper {
             var stack = stacks.get(i);
             sorted.add(ObjectIntPair.of(stack, i));
             boolean isEmpty = emptySimulation[i - begin] = stack.isEmpty();
-            if (allShulkerBox && !isEmpty && !ShulkerBoxItemHelper.isShulkerBoxBlockItem(stack)) {
+            if (allShulkerBox && !isEmpty && !isShulkerBoxBlockItem(stack)) {
                 allShulkerBox = false;
             }
         }
@@ -219,7 +219,14 @@ public abstract class SortInventoryHelper {
 
     private static boolean canStackAddMore(@NotNull ItemStack target, ItemStack stack) {
         return ItemStack.isSameItemSameComponents(target, stack)
-                && ShulkerBoxItemHelper.isStackable(target)
-                && target.getCount() < ShulkerBoxItemHelper.getMaxCount(target);
+                && isStackable(target) && target.getCount() < target.getMaxStackSize();
+    }
+
+    private static boolean isStackable(ItemStack itemStack) {
+        return itemStack.getMaxStackSize() > 1 && (!itemStack.isDamageableItem() || !itemStack.isDamaged());
+    }
+
+    static boolean isShulkerBoxBlockItem(@NotNull ItemStack itemStack) {
+        return itemStack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof ShulkerBoxBlock;
     }
 }
