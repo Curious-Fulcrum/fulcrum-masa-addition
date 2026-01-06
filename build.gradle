@@ -47,7 +47,7 @@ dependencies {
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     modRuntimeOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modRuntimeOnly "maven.modrinth:carpet:${project.carpet_version}"
-//    modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
+    modRuntimeOnly "maven.modrinth:gca:${project.gca_version}"
     modImplementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
     modImplementation "com.github.sakura-ryoko:minihud:${project.minihud_version}"
 }
