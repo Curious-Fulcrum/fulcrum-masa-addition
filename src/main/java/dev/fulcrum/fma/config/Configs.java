@@ -13,8 +13,8 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Configs implements IConfigHandler {
     private static final String PREFIX = "fma.config";
@@ -30,9 +30,24 @@ public class Configs implements IConfigHandler {
 
     public static final ConfigBoolean villagerRestockTime = new ConfigBoolean("villagerRestockTime", true).apply(PREFIX);
 
-    static final List<ConfigHotkey> HOTKEYS = List.of(openConfigGui, sortInventory);
-    static final List<IConfigBase> GENERIC = List.of(sortInventoryShulkerBoxLast, betterSneaking, villagerRestockTime);
-    static final List<IConfigBase> ALL = Stream.concat(HOTKEYS.stream(), GENERIC.stream()).toList();
+    static final List<ConfigHotkey> HOTKEYS = new ArrayList<>();
+    static final List<IConfigBase> GENERIC = new ArrayList<>();
+    static final List<IConfigBase> ALL = new ArrayList<>();
+
+    static {
+        for (var field : Configs.class.getDeclaredFields()) {
+            if (!IConfigBase.class.isAssignableFrom(field.getType())) continue;
+            try {
+                var obj = (IConfigBase) field.get(null);
+                ALL.add(obj);
+
+                if (obj instanceof ConfigHotkey hotkey) HOTKEYS.add(hotkey);
+                else GENERIC.add(obj);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public static void init() {
         var callbacks = new Callbacks();
