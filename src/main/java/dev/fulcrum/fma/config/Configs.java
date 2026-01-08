@@ -20,7 +20,7 @@ public class Configs implements IConfigHandler {
     private static final String PREFIX = "fma.config";
     private final Path configPath = FabricLoader.getInstance().getConfigDir().resolve("fma.json");
 
-    public static final ConfigHotkey openConfigGui = new ConfigHotkey("openConfigGui", "F,C").apply(PREFIX);
+    public static final ConfigHotkey openConfigGui = new ConfigHotkey("openConfigGui", "Z,C").apply(PREFIX);
 
     public static final ConfigHotkey sortInventory = new ConfigHotkey("sortInventory", "R", KeybindSettings.GUI).apply(PREFIX);
 
