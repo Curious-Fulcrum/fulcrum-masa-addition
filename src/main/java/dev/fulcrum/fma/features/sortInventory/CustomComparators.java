@@ -13,7 +13,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.BedBlock;
@@ -24,9 +23,9 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
@@ -93,13 +92,6 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
         this.allShulkerBox = allShulkerBox;
     }
 
-    private static int compareShulkerBox(@Nullable ItemContainerContents a, @Nullable ItemContainerContents b) {
-        int aSize = 0, bSize = 0;
-        if (a != null) aSize = a.stream().toList().size();
-        if (b != null) bSize = b.stream().toList().size();
-        return aSize - bSize;
-    }
-
     @Override
     public int compare(ObjectIntPair<ItemStack> infoA, ObjectIntPair<ItemStack> infoB) {
         ItemStack a = infoA.left(), b = infoB.left();
@@ -116,9 +108,6 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
         if (aId == 0 && bId != 0) return 1;
         else if (aId != 0 && bId == 0) return -1;
         else if (aId == 0) return 0;
-
-        if (SortInventoryHelper.isShulkerBoxBlockItem(a) && SortInventoryHelper.isShulkerBoxBlockItem(b) && itemA == itemB)
-            return -compareShulkerBox(a.get(DataComponents.CONTAINER), b.get(DataComponents.CONTAINER));
 
         if (itemA instanceof BlockItem blockItemA && itemB instanceof BlockItem blockItemB) {
             Block blockA = blockItemA.getBlock(), blockB = blockItemB.getBlock();
