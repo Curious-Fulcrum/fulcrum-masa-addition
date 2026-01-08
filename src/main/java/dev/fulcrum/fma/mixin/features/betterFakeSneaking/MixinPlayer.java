@@ -1,8 +1,9 @@
-package dev.fulcrum.fma.mixin.features.betterSneaking;
+package dev.fulcrum.fma.mixin.features.betterFakeSneaking;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.fulcrum.fma.config.Configs;
+import fi.dy.masa.tweakeroo.config.FeatureToggle;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -48,7 +49,9 @@ public abstract class MixinPlayer extends Entity {
 
     @Unique
     private boolean shouldApplyTweak() {
-        return Configs.betterSneaking.getBooleanValue() && level().isClientSide;
+        return Configs.betterFakeSneaking.getBooleanValue()
+                && FeatureToggle.TWEAK_FAKE_SNEAKING.getBooleanValue()
+                && level().isClientSide;
     }
 
 }

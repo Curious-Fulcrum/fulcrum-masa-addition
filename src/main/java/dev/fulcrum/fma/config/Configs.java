@@ -26,7 +26,7 @@ public class Configs implements IConfigHandler {
 
     public static final ConfigBoolean sortInventoryShulkerBoxLast = new ConfigBoolean("sortInventoryShulkerBoxLast", true).apply(PREFIX);
 
-    public static final ConfigBoolean betterSneaking = new ConfigBoolean("betterSneaking", true).apply(PREFIX);
+    public static final ConfigBoolean betterFakeSneaking = new ConfigBoolean("betterFakeSneaking", false).apply(PREFIX);
 
     public static final ConfigBoolean villagerRestockTime = new ConfigBoolean("villagerRestockTime", true).apply(PREFIX);
 
