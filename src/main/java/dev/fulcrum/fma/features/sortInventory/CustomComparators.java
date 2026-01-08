@@ -99,9 +99,9 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
         int aId = Item.getId(itemA), bId = Item.getId(itemB);
 
         if (Configs.sortInventoryShulkerBoxLast.getBooleanValue() && !allShulkerBox)
-            if (SortInventoryHelper.isShulkerBoxBlockItem(a) && !SortInventoryHelper.isShulkerBoxBlockItem(b))
+            if (SortInventoryUtils.isShulkerBoxBlockItem(a) && !SortInventoryUtils.isShulkerBoxBlockItem(b))
                 return 1;
-            else if (!SortInventoryHelper.isShulkerBoxBlockItem(a) && SortInventoryHelper.isShulkerBoxBlockItem(b))
+            else if (!SortInventoryUtils.isShulkerBoxBlockItem(a) && SortInventoryUtils.isShulkerBoxBlockItem(b))
                 return -1;
 
         // if item is empty, then id always equals 0

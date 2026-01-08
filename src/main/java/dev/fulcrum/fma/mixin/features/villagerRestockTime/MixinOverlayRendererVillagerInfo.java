@@ -1,7 +1,7 @@
 package dev.fulcrum.fma.mixin.features.villagerRestockTime;
 
 import dev.fulcrum.fma.config.Configs;
-import dev.fulcrum.fma.features.villagers.VillagerUtils;
+import dev.fulcrum.fma.features.VillagerUtils;
 import fi.dy.masa.minihud.renderer.OverlayRendererVillagerInfo;
 import fi.dy.masa.minihud.util.EntityUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;

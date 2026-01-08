@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class SortInventoryHelper {
+public abstract class SortInventoryUtils {
 
     public static void sort() {
         // check

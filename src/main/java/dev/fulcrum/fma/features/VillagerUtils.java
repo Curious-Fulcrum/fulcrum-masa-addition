@@ -1,4 +1,4 @@
-package dev.fulcrum.fma.features.villagers;
+package dev.fulcrum.fma.features;
 
 import dev.fulcrum.fma.mixin.accessor.VillagerAccessor;
 import fi.dy.masa.malilib.gui.GuiBase;
