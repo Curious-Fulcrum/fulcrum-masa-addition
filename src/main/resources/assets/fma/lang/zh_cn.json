@@ -8,7 +8,7 @@
   "fma.config.name.sortInventoryShulkerBoxLast": "整理仓库时潜影盒放在最后",
   "fma.config.comment.sortInventoryShulkerBoxLast": "整理仓库时潜影盒放在最后",
   "fma.config.name.betterFakeSneaking": "更好的伪潜行",
-  "fma.config.comment.betterFakeSneaking": "在伪潜行时玩家可以向下移动 1 格高",
+  "fma.config.comment.betterFakeSneaking": "在伪潜行时玩家可以向下移动 1 格高（依赖 tweakeroo）",
   "fma.config.name.villagerRestockTime": "村民补货时间",
-  "fma.config.comment.villagerRestockTime": "渲染村民的下一次补货时间。"
+  "fma.config.comment.villagerRestockTime": "渲染村民的下一次补货时间（依赖 minihud）"
 }

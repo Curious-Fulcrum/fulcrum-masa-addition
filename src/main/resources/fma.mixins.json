@@ -15,7 +15,8 @@
     "accessor.color.MixinStainedGlassBlock",
     "accessor.color.MixinStainedGlassPaneBlock",
     "accessor.color.MixinWoolCarpetBlock",
-    "features.betterSneaking.MixinPlayer",
+    "features.betterFakeSneaking.MixinPlayer",
     "features.villagerRestockTime.MixinOverlayRendererVillagerInfo"
-  ]
+  ],
+  "plugin": "dev.fulcrum.fma.MixinPlugin"
 }

@@ -4,11 +4,11 @@
   "fma.config.name.openConfigGui": "openConfigGui",
   "fma.config.comment.openConfigGui": "A hotkey to open the in-game Config GUI",
   "fma.config.name.sortInventory": "sortInventory",
-  "fma.config.comment.sortInventory": "A hotkey to sort inventory.",
+  "fma.config.comment.sortInventory": "A hotkey to sort inventory",
   "fma.config.name.sortInventoryShulkerBoxLast": "sortInventoryShulkerBoxLast",
-  "fma.config.comment.sortInventoryShulkerBoxLast": "Sort inventory shulker box last.",
+  "fma.config.comment.sortInventoryShulkerBoxLast": "Sort inventory shulker box last",
   "fma.config.name.betterFakeSneaking": "betterFakeSneaking",
-  "fma.config.comment.betterFakeSneaking": "Player can move down 1 height when fake sneaking.",
+  "fma.config.comment.betterFakeSneaking": "Player can move down 1 height when fake sneaking(needs tweakeroo)",
   "fma.config.name.villagerRestockTime": "villagerRestockTime",
-  "fma.config.comment.villagerRestockTime": "Render villager's next restock time."
+  "fma.config.comment.villagerRestockTime": "Render villager's next restock time(needs minihud)"
 }
