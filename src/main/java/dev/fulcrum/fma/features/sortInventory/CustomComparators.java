@@ -117,9 +117,11 @@ class ItemStackComparator implements Comparator<ObjectIntPair<ItemStack>> {
                     || blockA instanceof ShulkerBoxBlock && blockB instanceof ShulkerBoxBlock
                     || blockA instanceof StainedGlassBlock && blockB instanceof StainedGlassBlock
                     || blockA instanceof StainedGlassPaneBlock && blockB instanceof StainedGlassPaneBlock
-                    || blockA instanceof WoolCarpetBlock && blockB instanceof WoolCarpetBlock)
-                return DYE_COLOR_MAPPING.getInt(((ColorAccessor) blockA).fma$getColor())
+                    || blockA instanceof WoolCarpetBlock && blockB instanceof WoolCarpetBlock) {
+                int difference = DYE_COLOR_MAPPING.getInt(((ColorAccessor) blockA).fma$getColor())
                         - DYE_COLOR_MAPPING.getInt(((ColorAccessor) blockB).fma$getColor());
+                if (difference != 0) return difference;
+            }
 
             String ida = BuiltInRegistries.BLOCK.getKey(blockA).getPath();
             String idb = BuiltInRegistries.BLOCK.getKey(blockB).getPath();
