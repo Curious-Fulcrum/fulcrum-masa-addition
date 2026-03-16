@@ -21,16 +21,22 @@ repositories {
         name = 'ParchmentMC'
         url = 'https://maven.parchmentmc.org'
     }
-    maven { url = "https://jitpack.io" }
+    maven {
+        url = "https://jitpack.io"
+        content { includeGroupAndSubgroups "com.github" }
+    }
     maven {
         url = 'https://maven.terraformersmc.com/releases/'
-        content {
-            includeGroup("com.terraformersmc")
-        }
+        content { includeGroup "com.terraformersmc" }
+    }
+    maven {
+        url = "https://masa.dy.fi/maven/sakura-ryoko"
+        content { includeGroupAndSubgroups "fi.dy.masa" }
     }
     maven {
         name = "Modrinth Maven"
         url = "https://api.modrinth.com/maven"
+        content { includeGroup "maven.modrinth" }
     }
 }
 
@@ -51,6 +57,7 @@ dependencies {
     modImplementation "com.github.sakura-ryoko:malilib:${project.malilib_version}"
     modImplementation "com.github.sakura-ryoko:tweakeroo:${project.tweakeroo_version}"
     modImplementation "com.github.sakura-ryoko:minihud:${project.minihud_version}"
+    modImplementation "com.github.sakura-ryoko:itemscroller:${project.itemscroller_version}"
 }
 
 loom {
@@ -94,7 +101,7 @@ jar {
     inputs.property "archivesName", project.base.archivesName
 
     from("LICENSE") {
-        rename { "${it}_${inputs.properties.archivesName}"}
+        rename { "${it}_${inputs.properties.archivesName}" }
     }
 }
 
