@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
-@Mixin(OverlayRendererVillagerInfo.class)
+@Mixin(value = OverlayRendererVillagerInfo.class, remap = false)
 public abstract class MixinOverlayRendererVillagerInfo {
 
     @Shadow
@@ -81,7 +81,7 @@ public abstract class MixinOverlayRendererVillagerInfo {
     private List<String> compatLibrarian(List<String> texts, Entity entity, Entity target) {
         if (Configs.villagerRestockTime.getBooleanValue()) {
             String cache = renderCache.get(target.getId());
-            if (cache != null)    texts.add(cache);
+            if (cache != null) texts.add(cache);
         }
         return texts;
     }
