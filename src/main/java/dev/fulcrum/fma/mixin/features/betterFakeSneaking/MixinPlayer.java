@@ -8,50 +8,38 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.LavaFluid;
+import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Player.class)
 public abstract class MixinPlayer extends Entity {
-    @Unique private static final float MAX_STEP_HEIGHT = 1.2F;
-    @Unique private float originalStepHeight = 0.0F;
-
     private MixinPlayer(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Shadow
-    protected abstract boolean canFallAtLeast(double dx, double dz, double dy);
-
-
-    @WrapOperation(method = "maybeBackOffFromEdge", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;maxUpStep()F"))
-    private float fakeStepHeight(Player player, Operation<Float> original) {
-        originalStepHeight = original.call(player);
-        return shouldApplyTweak() ? MAX_STEP_HEIGHT : original.call(player);
+    @WrapOperation(method = "maybeBackOffFromEdge", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canFallAtLeast(DDD)Z"))
+    private boolean betterFakeSneaking(Player player, double x, double z, double distance, Operation<Boolean> original) {
+        // Patched value if betterSneak is enabled, otherwise vanilla value.
+        boolean ori = original.call(player, x, z, distance);
+        if (shouldApplyTweak()) {
+            return canFallAtLeastWithLiquid(x, z);
+        }
+        return ori;
     }
 
-    @WrapOperation(method = "maybeBackOffFromEdge", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canFallAtLeast(DDD)Z"))
-    private boolean checkFallAtLava(Player player, double dx, double dz, double dy, Operation<Boolean> original) {
-        // Patched value if betterSneak is enabled, otherwise vanilla value.
-        boolean result = original.call(player, dx, dz, dy);
-
-        if (!shouldApplyTweak()) return result;
-
-        // Always vanilla value and bypass WrapOperation chain invoke.
-        boolean vanillaResult = canFallAtLeast(dx, dz, originalStepHeight);
-        if (vanillaResult && !result && player.level().getFluidState(player.blockPosition().below()).getType() instanceof LavaFluid)
-            return true;
-        return result;
+    /// Modified version of canFallAtLeast, adding fluid check and increasing the distance of downward check
+    @Unique
+    private boolean canFallAtLeastWithLiquid(double x, double z) {
+        AABB aABB = this.getBoundingBox();
+        AABB collisionBox = new AABB(aABB.minX + 1.0E-7 + x, aABB.minY - 1.2 - 1.0E-7, aABB.minZ + 1.0E-7 + z, aABB.maxX - 1.0E-7 + x, aABB.minY, aABB.maxZ - 1.0E-7 + z);
+        return this.level().noCollision(this, collisionBox, true);
     }
 
     @Unique
     private boolean shouldApplyTweak() {
-        return Configs.betterFakeSneaking.getBooleanValue()
-                && FeatureToggle.TWEAK_FAKE_SNEAKING.getBooleanValue()
-                && level().isClientSide;
+        return Configs.betterFakeSneaking.getBooleanValue() && FeatureToggle.TWEAK_FAKE_SNEAKING.getBooleanValue() && level().isClientSide;
     }
 
 }
