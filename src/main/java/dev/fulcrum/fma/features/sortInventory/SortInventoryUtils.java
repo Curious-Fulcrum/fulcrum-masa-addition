@@ -55,14 +55,34 @@ public abstract class SortInventoryUtils {
         // do click
         for (int slotId : mergeQueue)
             client.gameMode.handleInventoryMouseClick(container.containerId, slotId, 0, ClickType.PICKUP, player);
+        int offhandSlotIndex = getOffhandSlotIndex(container);
+        boolean offhandMoved = false;
+        // 将副手的物品临时移到鼠标指针上
+        if (offhandSlotIndex != -1 && !container.getSlot(offhandSlotIndex).getItem().isEmpty() && container.getCarried().isEmpty()) {
+            client.gameMode.handleInventoryMouseClick(container.containerId, offhandSlotIndex, 0, ClickType.PICKUP, player);
+            offhandMoved = true;
+        }
         for (int slotId : sortQueue) {
             // negative id to make bundle's strange action compatible
             client.gameMode.handleInventoryMouseClick(container.containerId, slotId, Inventory.SLOT_OFFHAND, ClickType.SWAP, player);
         }
+        // 如果之前移动了副手物品，现在将其放回副手槽
+        if (offhandMoved)
+            client.gameMode.handleInventoryMouseClick(container.containerId, offhandSlotIndex, 0, ClickType.PICKUP, player);
 
         client.getSoundManager().play(mergeQueue.isEmpty() && sortQueue.isEmpty() ?
                 SimpleSoundInstance.forUI(SoundEvents.DISPENSER_FAIL, 1.0F) :
                 SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+    }
+
+    /// @return 副手槽在 container.slots 中的索引，若未找到则返回 -1。
+    private static int getOffhandSlotIndex(AbstractContainerMenu container) {
+        for (Slot slot : container.slots) {
+            if (slot.container instanceof Inventory && slot.getContainerSlot() == Inventory.SLOT_OFFHAND) {
+                return slot.index;
+            }
+        }
+        return -1;
     }
 
     @Nullable
